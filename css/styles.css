@@ -78,4 +78,8 @@ ul {
 }
 
 
-
+#pagination img {
+  display: inline-block; 
+  margin-right: 10px; 
+  width: 100px;
+}
