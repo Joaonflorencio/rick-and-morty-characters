@@ -72,14 +72,23 @@ table {
   background-color: #03b1c8;
 }
 
-ul {  
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   padding-top: 100px;
   list-style: none;
 }
 
+li {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
 
-#pagination img {
-  display: inline-block; 
-  margin-right: 10px; 
-  width: 100px;
+span {
+  font-size: 20px;
+  font-weight: bold;
 }

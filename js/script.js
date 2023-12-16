@@ -1,38 +1,67 @@
-const currentPage = 1;
+const characterList = document.getElementById("character-list");
+const prevPageButton = document.getElementById("prev-page");
+const nextPageButton = document.getElementById("next-page");
 
-function fetchCharacters(page) {
-  fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
-    .then(response => response.json())
-    .then(data => {
-      displayCharacters(data.results);
-    })
-    .catch(error => console.error('Error:', error));
-}
+let currentPage = 1;
 
-function displayCharacters(characters) {
-  const characterList = document.getElementById("character-list");
-  characterList.innerHTML = ''; 
-  characters.forEach(character => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <img src="${character.image}" alt="${character.name}">
-      <p>Name: ${character.name}</p>
-      <p>Species: ${character.species}</p>
-    `;
-    characterList.appendChild(li);
+// Función para obtener y mostrar personajes
+function getRickAndMortyCharacters(page) {
+fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
+  .then((response) => response.json())
+  .then((data) => {
+      const characters = data.results;
+      characterList.innerHTML = ''; // Limpiar la lista actual
+      characters.forEach((character) => {
+          const listItem = document.createElement("li");
+          const characterImage = document.createElement("img");
+          characterImage.src = character.image; // URL de la imagen
+          characterImage.alt = character.name; // Texto alternativo de la imagen
+          listItem.appendChild(characterImage);
+
+          const characterInfo = document.createElement("div");
+          characterInfo.classList.add("character-info");
+          characterInfo.innerHTML = `
+              <p><span>Name:</span> ${character.name}</p>
+              <p><span>Species</span>: ${character.species}</p>
+          `;
+          listItem.appendChild(characterInfo);
+
+          characterList.appendChild(listItem);
+      });
+
+      // Actualizar el número de página actual
+      currentPage = page;
+      updatePaginationButtons(data.info);
+  })
+  .catch((error) => {
+      console.error("Error fetching data:", error);
   });
 }
 
-document.getElementById("prev-page").addEventListener("click", () => {
+// Función para actualizar los botones de paginación
+function updatePaginationButtons(info) {
   if (currentPage > 1) {
-    currentPage -= 1;
-    fetchCharacters(currentPage);
+      prevPageButton.disabled = false;
+  } else {
+      prevPageButton.disabled = true;
+  }
+  if (currentPage < info.pages) {
+      nextPageButton.disabled = false;
+  } else {
+      nextPageButton.disabled = true;
+  }
+}
+
+// Event listeners para los botones de paginación
+prevPageButton.addEventListener("click", () => {
+  if (currentPage > 1) {
+      getRickAndMortyCharacters(currentPage - 1);
   }
 });
 
-document.getElementById("next-page").addEventListener("click", () => {
-  currentPage += 1;
-  fetchCharacters(currentPage);
+nextPageButton.addEventListener("click", () => {
+    getRickAndMortyCharacters(currentPage + 1);
 });
 
-fetchCharacters(currentPage);
+// Llamar a la función para obtener y mostrar los personajes en la página 1
+getRickAndMortyCharacters(currentPage);
